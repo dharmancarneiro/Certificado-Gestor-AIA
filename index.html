@@ -1,34 +1,94 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Certificado de Formação Gestor AIA - MEC</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
-      }
-      .gradient-bg {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
-  }
-}
-</script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Certificado de Formação Gestor AIA - MEC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+  </style>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbzMrhVovjD2zRs09oPNJ6DsUbC7GzoJAcKmse7jr1iBpFJ8b1HGsFE5V4aisMK6QcNvvA/exec";
+
+    const QUIZ_QUESTIONS = [
+      { id: 1, enunciado: "O que é uma LLM (Large Language Model)?", alternativas: { A: "Um banco de dados relacional", B: "Um tipo de servidor físico", C: "Um aplicativo de notas", D: "Um modelo de linguagem grande que gera texto e entende contexto (IA de linguagem)" }, gabarito: "D" },
+      { id: 2, enunciado: "Para que serve Engenharia de Prompt?", alternativas: { A: "Para escrever instruções claras e estruturadas que guiam um modelo de IA a gerar respostas melhores", B: "Para desenhar interfaces gráficas", C: "Para compactar arquivos de áudio", D: "Para criar certificados automáticos" }, gabarito: "A" },
+      { id: 3, enunciado: "Na aula de Engenharia de Prompt (módulo básico), qual é uma dica prática para obter respostas melhores?", alternativas: { A: "Pedir respostas sem contexto e bem vagas", B: "Colocar só emojis no prompt", C: "Dar contexto claro e exemplos curtos para o modelo seguir", D: "Usar o mesmo prompt para tudo sem adaptar" }, gabarito: "C" },
+      { id: 4, enunciado: "Para que serve Engenharia de Prompt Avançada (Parte 2)?", alternativas: { A: "Para criar backups locais do modelo", B: "Para refinar prompts com técnicas avançadas (templates, chain-of-thought, validação e avaliação de saídas) e obter respostas mais precisas/seguras", C: "Para traduzir automaticamente sites inteiros", D: "Para trocar a voz do assistente só por comandos" }, gabarito: "B" },
+      { id: 5, enunciado: "O que é o N8N?", alternativas: { A: "Um editor de vídeo", B: "Um plugin de navegador", C: "Um serviço de hospedagem", D: "Uma ferramenta para criar automações com blocos visuais (no-code/low-code)" }, gabarito: "D" },
+      { id: 6, enunciado: "Para que serve o Make?", alternativas: { A: "Para montar automações e integrar aplicações sem programar (orquestração visual)", B: "Para editar fotos", C: "Para enviar e-mail marketing apenas", D: "Para gerenciar contas bancárias" }, gabarito: "A" },
+      { id: 7, enunciado: "Qual plataforma é ensinada na Formação para aprender No-Code?", alternativas: { A: "Photoshop", B: "Excel avançado", C: "Bubble (plataforma no-code usada nas aulas)", D: "Visual Studio Code" }, gabarito: "C" },
+      { id: 8, enunciado: "O que é Ninja Pages no contexto do curso?", alternativas: { A: "Uma ferramenta de edição de vídeo", B: "Um plugin de navegador", C: "Um modelo de e-mail", D: "Uma solução do Christian para criar sites com suporte de IA" }, gabarito: "D" },
+      { id: 9, enunciado: "O que Christian recomenda ao construir um site com ferramentas do curso?", alternativas: { A: "Utilizar ferramentas (ex.: Ninja Pages) e, se precisar, subir no GitHub/Vercel para deploy rápido", B: "Nunca usar GitHub/Vercel", C: "Fazer tudo manualmente sem ajuda de IA", D: "Não conectar domínio" }, gabarito: "A" },
+      { id: 10, enunciado: "O que é um SaaS?", alternativas: { A: "Um dispositivo de hardware", B: "Um tipo de certificado digital", C: "Software entregue como serviço pela internet (assinatura), que os clientes usam sem instalar localmente", D: "Um formato de imagem" }, gabarito: "C" },
+      { id: 11, enunciado: "O que o Christian recomenda para validar uma ideia antes de escalar?", alternativas: { A: "Construir todas as funcionalidades antes de testar", B: "Fazer um MVP simples, validar com clientes e iterar", C: "Guardar a ideia por 1 ano", D: "Cobrar caro antes de testar" }, gabarito: "B" },
+      { id: 12, enunciado: "O que o Christian sugere como modelo de parceria para entrar em sociedades com ele?", alternativas: { A: "Ter só uma ideia sem produto", B: "Enviar um pitch por WhatsApp sem MVP", C: "Pedir avaliação antes de começar qualquer venda", D: "Ter um MVP e 50–100 clientes pagantes para avaliação de sociedade" }, gabarito: "D" },
+      { id: 13, enunciado: "Qual é a recomendação prática para quem quer ganhar dinheiro rápido após o curso?", alternativas: { A: "Prestar serviços de automação e implantação para clientes (implantação + mensalidade)", B: "Fazer posts virais e esperar receita passiva", C: "Vender apenas cursos de terceiros", D: "Esperar oportunidades aparecerem" }, gabarito: "A" },
+      { id: 14, enunciado: "Segundo o Christian, qual é um bom primeiro cliente para testar um agente de atendimento?", alternativas: { A: "Empresas grandes internacionais só", B: "Apenas amigos e familiares", C: "Pequenos negócios locais (ex.: clínicas, assistência técnica) para validar o fluxo e cobrar mensalidade", D: "Empresas sem histórico de atendimento digital" }, gabarito: "C" },
+      { id: 15, enunciado: "Segundo o Christian, qual trabalho ajuda muito para vender automação a empresas?", alternativas: { A: "Pedir referências sem mostrar resultado", B: "Enviar propostas genéricas por e-mail", C: "Focar somente em posts no Instagram", D: "Ir até a operação do cliente, ver o processo real (ex.: histórico de atendimento) e mapear a dor" }, gabarito: "D" },
+      { id: 16, enunciado: "Qual a dica do Christian sobre escolher modelos de linguagem para agentes (custos)?", alternativas: { A: "Usar sempre o modelo mais caro", B: "Testar modelos mais econômicos (ex.: versões mini) e escalar conforme necessidade", C: "Nunca medir o consumo de tokens", D: "Chamar a API sem limites" }, gabarito: "B" },
+      { id: 17, enunciado: "Para começar um projeto com baixo custo, qual dica prática o Christian dá?", alternativas: { A: "Assinar todas as ferramentas caras já no começo", B: "Comprar servidores caros imediatamente", C: "Contratar equipe grande no primeiro mês", D: "Testar com ferramentas acessíveis, usar modelos econômicos e escalar conforme resultado" }, gabarito: "D" },
+      { id: 18, enunciado: "Qual é a vantagem de criar um e-book prático conforme o curso (Mão na Massa)?", alternativas: { A: "Não precisa divulgação", B: "É caro produzir e não vende bem", C: "Serve como produto simples para validar audiência e iniciar funil de vendas", D: "Substitui todo o site da empresa" }, gabarito: "C" }
+    ];
+
+    const SURVEY_QUESTIONS = [
+      { id: 1, text: "Com qual gênero você se identifica?", type: "select", options: [{ label: "Masculino", value: "A" }, { label: "Feminino", value: "B" }, { label: "Prefiro não informar", value: "C" }, { label: "Outro", value: "D" }] },
+      { id: 2, text: "Qual é a sua faixa etária?", type: "select", options: [{ label: "Menos de 18 anos", value: "A" }, { label: "18 a 25 anos", value: "B" }, { label: "26 a 35 anos", value: "C" }, { label: "36 a 45 anos", value: "D" }, { label: "46 a 55 anos", value: "E" }, { label: "Acima de 55 anos", value: "F" }] },
+      { id: 3, text: "Qual é o seu nível de escolaridade?", type: "select", options: [{ label: "Ensino Fundamental completo", value: "A" }, { label: "Ensino Médio completo", value: "B" }, { label: "Ensino Superior incompleto", value: "C" }, { label: "Ensino Superior completo", value: "D" }] },
+      { id: 4, text: "Qual é a sua ocupação atual?", type: "select", options: [{ label: "Funcionário CLT", value: "A" }, { label: "Autônomo/PJ", value: "B" }, { label: "Funcionário público", value: "C" }, { label: "Empresário", value: "D" }, { label: "Empreendedor", value: "E" }, { label: "Profissional liberal", value: "F" }, { label: "Outro", value: "G" }] },
+      { id: 5, text: "Em qual faixa de renda mensal você se encontra?", type: "select", options: [{ label: "Até 1 salário mínimo", value: "A" }, { label: "De 2 a 5 salários mínimos", value: "B" }, { label: "De 6 a 10 salários mínimos", value: "C" }, { label: "Acima de 10 salários mínimos", value: "D" }] },
+      { id: 6, text: "Há quanto tempo você conhece o Christian?", type: "select", options: [{ label: "Menos de 3 meses", value: "A" }, { label: "De 3 a 6 meses", value: "B" }, { label: "De 6 meses a 1 ano", value: "C" }, { label: "Mais de 1 ano", value: "D" }, { label: "Sou das antigas (2 anos ou mais)", value: "E" }] },
+      { id: 7, text: "Você já era aluno do Christian antes de entrar na Formação Gestor AIA?", type: "select", options: [{ label: "Não, este é o primeiro programa que eu entrei", value: "A" }, { label: "Sim, fiz o OMAT", value: "B" }, { label: "Sim, fiz o MP40", value: "C" }, { label: "Sim, fiz o Apenas Comece", value: "D" }, { label: "Sim, fiz outros cursos com o Chris", value: "E" }] },
+      { id: 8, text: "O que não pode faltar na Formação Gestor AIA?", type: "text" },
+      { id: 9, text: "Quais resultados você teve com a Formação Gestor AIA?", type: "text" },
+      { id: 10, text: "O que podemos melhorar na Formação Gestor AIA?", type: "text" }
+    ];
+
+    const App = () => {
+      const [state, setState] = useState({ step: 'welcome', userData: { nome: '', email: '', whatsapp: '' }, quizAnswers: {}, surveyAnswers: {}, currentQuestionIndex: 0, currentSurveyIndex: 0 });
+      const [identificationStep, setIdentificationStep] = useState(0);
+      const [inputValue, setInputValue] = useState('');
+      const [isSending, setIsSending] = useState(false);
+
+      const quizResults = useMemo(() => { let score = 0; QUIZ_QUESTIONS.forEach(q => { if (state.quizAnswers[q.id] === q.gabarito) score++; }); const percentage = Math.round((score / QUIZ_QUESTIONS.length) * 100); return { score, percentage, approved: score >= 11 }; }, [state.quizAnswers]);
+
+      const sendDataToWebhook = async (finalState) => { if (!WEBHOOK_URL) return; const { score, percentage, approved } = quizResults; const s = finalState.surveyAnswers; try { setIsSending(true); await fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ timestamp: new Date().toLocaleString('pt-BR'), nome: finalState.userData.nome, email: finalState.userData.email, whatsapp: finalState.userData.whatsapp, status_teste: approved ? "APROVADO" : "REPROVADO", acertos: score, percentual: percentage + "%", p: { genero: s[1] || "-", idade: s[2] || "-", escolaridade: s[3] || "-", ocupacao: s[4] || "-", renda: s[5] || "-", tempo_conhece: s[6] || "-", aluno_anterior: s[7] || "-", nao_pode_faltar: s[8] || "-", resultados: s[9] || "-", melhorias: s[10] || "-" } }) }); } catch (e) { console.error(e); } finally { setIsSending(false); } };
+
+      const handleNextIdentification = () => { if (!inputValue.trim()) return; if (identificationStep === 0) { setState(p => ({ ...p, userData: { ...p.userData, nome: inputValue } })); setIdentificationStep(1); setInputValue(''); } else if (identificationStep === 1) { setState(p => ({ ...p, userData: { ...p.userData, email: inputValue } })); setIdentificationStep(2); setInputValue(''); } else if (identificationStep === 2) { setState(p => ({ ...p, userData: { ...p.userData, whatsapp: inputValue } })); setIdentificationStep(3); } };
+
+      const handleQuizAnswer = (letter) => { const qid = QUIZ_QUESTIONS[state.currentQuestionIndex].id; const newAns = { ...state.quizAnswers, [qid]: letter }; setState(p => { const next = p.currentQuestionIndex + 1; if (next < QUIZ_QUESTIONS.length) return { ...p, quizAnswers: newAns, currentQuestionIndex: next }; const ns = { ...p, quizAnswers: newAns, step: 'result' }; let c = 0; QUIZ_QUESTIONS.forEach(q => { if (newAns[q.id] === q.gabarito) c++; }); if (c < 11) sendDataToWebhook(ns); return ns; }); };
+
+      const handleSurveyAnswer = (answer) => { const sid = SURVEY_QUESTIONS[state.currentSurveyIndex].id; const newAns = { ...state.surveyAnswers, [sid]: answer }; setState(p => { const next = p.currentSurveyIndex + 1; if (next < SURVEY_QUESTIONS.length) return { ...p, surveyAnswers: newAns, currentSurveyIndex: next }; const ns = { ...p, surveyAnswers: newAns, step: 'final' }; sendDataToWebhook(ns); return ns; }); };
+
+      const renderStep = () => {
+        switch (state.step) {
+          case 'welcome': return (<div className="text-center space-y-8 py-10"><h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">Certificado de Formação Gestor AIA - MEC</h1><p className="text-xl text-slate-500 max-w-xl mx-auto font-medium">Parabéns por chegar até aqui! Vamos iniciar o processo para conquistar seu certificado oficial.</p><button onClick={() => setState(p => ({...p, step: 'identification'}))} className="px-12 py-5 bg-slate-900 text-white font-black rounded-2xl shadow-2xl hover:bg-slate-800 transition transform hover:-translate-y-1 text-lg">INICIAR AGORA 🚀</button></div>);
+          case 'identification': return (<div className="max-w-md mx-auto space-y-8 py-6">{identificationStep < 3 ? (<div className="space-y-6"><h2 className="text-3xl font-black text-slate-900">Identificação</h2><div className="space-y-4"><label className="block text-slate-500 font-bold uppercase text-xs tracking-widest">{identificationStep === 0 && "1. Qual o seu nome completo?"}{identificationStep === 1 && "2. Qual o e-mail usado na compra?"}{identificationStep === 2 && "3. Qual o seu WhatsApp com DDD?"}</label><input type={identificationStep === 1 ? "email" : "text"} value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyPress={e => e.key === 'Enter' && handleNextIdentification()} className="w-full p-5 border-2 border-slate-100 rounded-2xl focus:border-slate-900 outline-none text-xl transition-all" placeholder={identificationStep === 0 ? "Seu nome completo..." : identificationStep === 1 ? "seuemail@email.com" : "(00) 00000-0000"} autoFocus /><button onClick={handleNextIdentification} className="w-full py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition text-lg shadow-lg">Continuar</button></div></div>) : (<div className="text-center space-y-8"><h2 className="text-3xl font-black text-slate-900">Confirme seus Dados</h2><div className="bg-slate-50 p-8 rounded-3xl space-y-4 text-left border-2 border-slate-100"><p><span className="font-bold text-slate-400 text-xs uppercase tracking-widest">Nome:</span><br/><span className="text-xl font-bold">{state.userData.nome}</span></p><p><span className="font-bold text-slate-400 text-xs uppercase tracking-widest">E-mail:</span><br/><span className="text-xl font-bold">{state.userData.email}</span></p><p><span className="font-bold text-slate-400 text-xs uppercase tracking-widest">WhatsApp:</span><br/><span className="text-xl font-bold">{state.userData.whatsapp}</span></p></div><button onClick={() => setState(p => ({...p, step: 'quiz'}))} className="w-full py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition text-lg shadow-xl">INICIAR TESTE (18 QUESTÕES) 📝</button></div>)}</div>);
+          case 'quiz': const currentQ = QUIZ_QUESTIONS[state.currentQuestionIndex]; return (<div className="max-w-3xl mx-auto space-y-10"><div className="flex justify-between items-end"><div><span className="text-xs font-black text-slate-400 uppercase tracking-widest">Questão</span><p className="text-3xl font-black text-slate-900">{state.currentQuestionIndex + 1} <span className="text-slate-300 text-xl">/ 18</span></p></div><div className="w-48 h-2 bg-slate-100 rounded-full overflow-hidden mb-2"><div className="h-full bg-slate-900 transition-all duration-500" style={{ width: ((state.currentQuestionIndex + 1) / 18 * 100) + '%' }} /></div></div><h2 className="text-2xl md:text-3xl font-bold text-slate-800 leading-tight">{currentQ.enunciado}</h2><div className="grid gap-4">{['A', 'B', 'C', 'D'].map(letter => (<button key={letter} onClick={() => handleQuizAnswer(letter)} className="group flex items-center p-5 text-left border-2 border-slate-100 rounded-2xl hover:border-slate-900 hover:bg-slate-50 transition-all duration-200"><span className="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-slate-100 group-hover:bg-slate-900 group-hover:text-white rounded-xl font-black mr-5 transition-colors text-lg">{letter}</span><span className="text-slate-700 font-semibold text-lg">{currentQ.alternativas[letter]}</span></button>))}</div></div>);
+          case 'result': const { score, percentage, approved } = quizResults; return (<div className="max-w-xl mx-auto text-center space-y-10 py-6">{approved ? (<><div className="space-y-4"><h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase">🎉 APROVADO(A)!</h2><p className="text-lg text-slate-500 font-medium">Parabéns! Você atingiu a pontuação necessária.</p></div><div className="p-10 bg-slate-50 rounded-[3rem] border-2 border-slate-100 shadow-inner"><span className="text-xs font-black text-slate-400 uppercase tracking-widest">Sua Nota</span><p className="text-8xl font-black text-slate-900 my-2">{percentage}%</p><p className="text-slate-500 font-bold text-lg">{score} de 18 acertos</p></div><button onClick={() => setState(p => ({...p, step: 'survey'}))} className="w-full py-6 bg-slate-900 text-white text-xl font-black rounded-[1.5rem] shadow-2xl hover:bg-slate-800 transition">INICIAR PESQUISA DE FEEDBACK 📝</button></>) : (<div className="space-y-8"><h2 className="text-4xl font-black text-slate-900">😔 NÃO FOI DESTA VEZ</h2><p className="text-7xl font-black text-slate-900">{percentage}%</p><p className="text-xl text-slate-500 max-w-sm mx-auto">Você acertou {score} questões. É necessário acertar pelo menos 11.<br/><br/>Revise o conteúdo e tente novamente!</p><button onClick={() => window.location.reload()} className="px-12 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition shadow-xl">Tentar Novamente</button></div>)}</div>);
+          case 'survey': const currentS = SURVEY_QUESTIONS[state.currentSurveyIndex]; return (<div className="max-w-2xl mx-auto space-y-10 py-6"><div className="text-center space-y-4"><span className="text-xs font-black text-slate-400 uppercase tracking-widest">Feedback {state.currentSurveyIndex + 1} de 10</span><h2 className="text-3xl font-bold text-slate-800 leading-tight">{currentS.text}</h2></div>{currentS.type === 'select' ? (<div className="grid gap-3">{currentS.options.map(opt => (<button key={opt.value} onClick={() => handleSurveyAnswer(opt.label)} className="group flex items-center p-5 text-left border-2 border-slate-100 rounded-2xl hover:border-slate-900 hover:bg-slate-50 transition-all"><span className="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-slate-100 group-hover:bg-slate-900 group-hover:text-white rounded-lg text-xs font-black mr-4">{opt.value}</span><span className="text-slate-700 font-bold text-lg">{opt.label}</span></button>))}</div>) : (<div className="space-y-6"><textarea className="w-full p-6 h-48 border-2 border-slate-100 rounded-3xl focus:border-slate-900 outline-none text-lg transition-all" placeholder="Escreva sua resposta detalhada..." value={inputValue} onChange={e => setInputValue(e.target.value)} autoFocus /><button onClick={() => { if (!inputValue.trim()) return; handleSurveyAnswer(inputValue); setInputValue(''); }} className="w-full py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition text-lg shadow-lg">Confirmar Resposta</button></div>)}</div>);
+          case 'final': return (<div className="max-w-3xl mx-auto space-y-12 py-6 text-center"><div className="space-y-4"><h2 className="text-5xl font-black text-slate-900 uppercase tracking-tighter">CONCLUÍDO! 🎊</h2><p className="text-xl text-slate-500 font-medium">Suas respostas foram registradas e sincronizadas com nossa base de dados.</p></div><div className="bg-white p-10 rounded-[3rem] shadow-2xl border border-slate-100 space-y-10"><div className="p-10 bg-slate-900 text-white rounded-[2.5rem] space-y-8 shadow-inner relative overflow-hidden"><div className="relative z-10"><h3 className="text-3xl font-black uppercase tracking-widest border-b border-slate-800 pb-5">🎓 Solicitar Certificado</h3><p className="text-lg text-slate-400 leading-relaxed mb-8">Agora você deve preencher o formulário oficial de emissão para gerar seu documento:</p><a href="https://docs.google.com/forms/d/e/1FAIpQLSfuuOi-TJ0mEoSc0XLvj7nPnlF_TnjdwZt1x5im_YBqdYuU8w/viewform?usp=send_form" target="_blank" rel="noopener noreferrer" className="block w-full text-center py-6 bg-white text-slate-900 font-black rounded-2xl hover:bg-slate-100 transition-all transform hover:scale-[1.03] shadow-2xl uppercase tracking-widest text-xl">SOLICITAR CERTIFICADO AGORA</a><div className="pt-8 border-t border-slate-800 mt-8"><p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Importante</p><p className="text-slate-300">O certificado será enviado em até 30 dias para: <br/><strong className="text-white text-xl underline">{state.userData.email}</strong></p></div></div></div><div className="space-y-2 pt-4"><p className="text-2xl font-black text-slate-800 italic">"Produtividade e tecnologia caminham juntas."</p><p className="font-bold text-slate-400 tracking-[0.3em] uppercase text-[10px]">— Christian Barbosa e Equipe AIA</p></div></div></div>);
+          default: return null;
+        }
+      };
+
+      return (<div className="min-h-screen flex flex-col bg-[#f8fafc]"><header className="gradient-bg py-8 px-6 shadow-2xl"><div className="max-w-6xl mx-auto flex items-center justify-between"><div className="flex items-center gap-4"><div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center font-black text-slate-900 text-2xl shadow-inner">AIA</div><div className="h-10 w-[2px] bg-slate-700 mx-2 hidden md:block"></div><h1 className="text-white font-black tracking-widest text-sm md:text-lg uppercase">Certificado Gestor AIA - MEC</h1></div></div></header><main className="flex-grow flex items-center justify-center p-6 md:p-12"><div className="w-full max-w-5xl bg-white rounded-[3.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] p-8 md:p-16 border border-slate-50 relative overflow-hidden">{isSending && (<div className="absolute inset-0 bg-white/95 backdrop-blur-md z-50 flex flex-col items-center justify-center"><div className="w-16 h-16 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin mb-6"></div><p className="text-slate-900 font-black uppercase tracking-[0.4em] text-[10px] animate-pulse">Sincronizando com a planilha oficial...</p></div>)}{renderStep()}</div></main><footer className="py-10 text-center text-slate-300 text-[10px] uppercase font-black tracking-[0.5em] border-t border-slate-100/50">© {new Date().getFullYear()} Christian Barbosa - Formação Gestor AIA</footer></div>);
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
 </html>
